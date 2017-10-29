@@ -5,28 +5,11 @@
     <meta charset="UTF-8">
     <title>Full Friend List</title>
     <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='style.css')}}" />
-    <style>
-        table {
-            font-family: arial, sans-serif;
-            border-collapse: collapse;
-            width: 100%;
-        }
-        
-        td,
-        th {
-            border: 1px solid #dddddd;
-            text-align: left;
-            padding: 8px;
-        }
-        
-        tr:nth-child(even) {
-            background-color: #dddddd;
-        }
-    </style>
 </head>
 
 <body>
-    {%for fullfriends: %}
+    <h1 style="text-align: center;">Full Friends</h1>
+
     <table>
         <tr>
             <th>First Name:</th>
@@ -35,16 +18,36 @@
             <th>Friend Created:</th>
             <th>Actions:</th>
         </tr>
-        <td>{{fullfriends['first_name']}}</td>
-        <td>{{fullfriends['last_name']}}</td>
-        <td>{{fullfriends['email']}}</td>
-        <td>{{fullfriends['created_at']}}</td>
+        <tr>
+            {%for friend in fullfriends: %}
+            <td>{{friend['first_name']}}</td>
+            <td>{{friend['last_name']}}</td>
+            <td>{{friend['email']}}</td>
+            <td>{{friend['created_at']}}</td>
+            <td>
+                <form action="/friends/{{friend['id']}}/edit" method='GET'>
+                    <input type="submit" value="EDIT">
+                </form>
+                <form action="/friends/{{friend['id']}}/delete" method='POST'>
+                    <input type="submit" value="DELETE">
+                </form>
+
+        </tr>
+        </td>
+        {%endfor%}
     </table>
-    {%endfor%}
+
     <br>
-    <hr><br>
-    <form action='/' methods='POST'>
-        First Name: <input type="text" name="first_name" /><br> Last Name: <input type="text" name="last_name" /><br> Email: <input type="text" name="email" />
+    <hr> {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %} {% for category, message in messages %}
+    <div>{{ message }}</div>
+    {% endfor %} {% endif %} {% endwith %}
+
+    <h4>Create a Friend:</h4>
+    <form action='/friends' method='POST'>
+        First Name: <input type="text" name="first_name" />
+        <br> Last Name: <input type="text" name="last_name" />
+        <br> Email: <input type="text" name="email" />
+        <br>
         <input type="submit" value="Enter" />
     </form>
 </body>
